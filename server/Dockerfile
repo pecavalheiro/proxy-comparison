@@ -1,4 +1,4 @@
-FROM ruby:2.2
+FROM ruby:2.3.1
 
 RUN gem install sinatra
 
@@ -9,4 +9,4 @@ RUN cd /app && bundle install
 
 EXPOSE 4567
 
-CMD cd /app && ruby server.rb 
+CMD cd /app && ruby server.rb -o 0.0.0.0 -e production
