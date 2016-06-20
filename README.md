@@ -1,8 +1,8 @@
-# Nginx Proxy Benchmarking
+## Nginx Proxy Benchmarking
 
-### Request time benchmarking for a simple application in three different scenarios: Direct access (no proxy), simple proxy and (TODO) a dynamic-upstream proxy .
+##### Request time benchmarking for a simple application in three different scenarios: Direct access (no proxy), simple proxy and (TODO) a dynamic-upstream proxy .
 
-## Running the benchmark:
+### Running the benchmark:
 
 #### Run the server (direct access):
 
