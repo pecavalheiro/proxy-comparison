@@ -1,0 +1,7 @@
+source 'https://rubygems.org'
+
+gem 'redis', '~>3.2'
+gem 'rest-client'
+gem 'colorize'
+gem 'slop'
+gem 'wannabe_bool'

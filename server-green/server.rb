@@ -2,5 +2,5 @@ require 'sinatra'
 require 'colorize'
 
 get '/' do
-  "Hello World!".green
+  "Hello World!\n".green
 end
