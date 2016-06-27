@@ -1,7 +1,6 @@
 require 'pp'
 require 'rest-client'
 require 'colorize'
-require 'progress_bar'
 require 'redis'
 require 'slop'
 require 'wannabe_bool'
