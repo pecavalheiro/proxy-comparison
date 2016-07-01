@@ -1,6 +1,4 @@
 #!/usr/bin/env ruby
-require 'pry-byebug'
-
 @network = 'deployment'
 
 def network_exists?
