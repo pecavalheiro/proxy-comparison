@@ -25,12 +25,6 @@ Current app is: #{current_upstream.to_s.send(current_upstream)}
 New app is: #{new_upstream.to_s.send(new_upstream)}
 #####################\n\n"
 
-network_exists = `docker network ls | grep #{docker_network} | wc -l`.to_b
-unless network_exists
-  puts 'Creating docker network'.black.on_yellow; puts
-  `docker network create deployment`
-end
-
 container_is_running = `docker ps -a -q --filter="name=app-#{new_upstream}" | wc -l`.to_b
 if container_is_running
   print 'Stopping running container'.black.on_yellow; puts
