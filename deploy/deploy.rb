@@ -13,7 +13,7 @@ redis = Redis.new(host: 'redis')
 end
 
 available_upstreams = %w(green blue)
-docker_network = 'deployment'
+docker_network = 'routing'
 
 current_upstream = redis.get('current_upstream') || 'green'
 
@@ -41,7 +41,7 @@ system("docker rm app-#{new_upstream}")
 
 puts; puts 'Starting updated application'.black.on_yellow
 system "docker run --name=app-#{new_upstream} --net=#{docker_network} -d app-#{new_upstream} " || raise('Error starting container cloud')
-sleep 10
+sleep 5
 
 puts; puts 'Container deployed!'.black.on_green
 

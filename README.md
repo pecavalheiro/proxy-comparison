@@ -1,38 +1,54 @@
-## Nginx Proxy Benchmarking
+## Nginx Router Comparison
 
-##### Request time benchmarking for a simple application in three different scenarios: Direct access (no proxy), simple proxy and (TODO) a dynamic-upstream proxy .
+##### Runs a simple application in four different scenarios: Direct access (no container, no router router), app inside a container, simple nginx router (proxy) and dynamic-upstream proxy (nginx + lua).
+After starting de desired application, run your benchmark against localhost:4000.
 
-### Running the benchmark:
+### Running the applications:
 
-#### Run the server (direct access):
-
-``` cd server && ruby server.rb -e production -p 4000```
-
-#### Run the benchmark:
-``` ruby benchmark.rb```
-
-The output will be something like
-
-|      |   user   |  system  |   total  |     real    |
-|------|----------|----------|----------|-------------|
-| ruby | 5.890000 | 1.220000 | 7.110000 | (13.827685) |
-| >avg | 0.000589 | 0.000122 | 0.000711 |  (0.001383) |
-
-#### Run the proxy and server (as Docker containers):
+#### Direct access:
 
 ```bash
-docker network create -d bridge benchmarking
 cd server
-docker build -t sinatra .
-docker run --name=sinatra -p 4000:4000 --net=benchmarking -d sinatra
-cd ../nginx-default
-docker build -t proxy .
-docker run -d -p 4001:4000 --net=benchmarking proxy
-cd ..
-ruby benchmark.rb 4001
+bundle install
+ruby server.rb -e production -p 4000 puma
 ```
 
-|      |   user   |  system  |   total  |     real    |
-|------|----------|----------|----------|-------------|
-| ruby | 5.910000 | 1.290000 | 7.200000 | (27.576583) |
-| >avg | 0.000591 | 0.000129 | 0.000720 |  (0.002758) |
+#### App in container:
+
+```bash
+cd server
+docker build -t app .
+docker run -p 4000:4000 -d app
+```
+
+#### App in container + Nginx Proxy:
+
+```bash
+docker network create routing
+cd server
+docker build -t app .
+docker run -d --net=routing --name application app
+cd ../nginx-default
+docker build -t nginx-default .
+docker run -p 4000:4000 -d --net=routing nginx-default
+```
+#### Dynamic router with 2 app containers (blue and green):
+
+```bash
+docker network create routing
+docker run -p 6379:6379 --name redis --net=routing -d redis
+cd server-blue
+docker build -t app-blue .
+docker run -d --net=routing --name app-blue app-blue
+cd ../server-green
+docker build -t app-green .
+docker run -d --net=routing --name app-green app-green
+cd ../nginx-lua
+docker build -t nginx-lua .
+docker run -p 4000:4000 -d --net=routing nginx-lua
+```
+
+#### EXTRA - router switch example (depends on nginx-lua above):
+
+- Run a simple loop to watch the response changing. In a separate terminal: `while true; do curl localhost:4000; done;`
+- Run the sample deploy script `cd deploy && ruby deploy.rb`
